@@ -12,7 +12,7 @@ Flask-API for ofono
 
 
 # Installation
-Raspbian reuirements (may be incomplete):
+Raspbian requirements (may be incomplete):
 
 ```bash
 $ sudo apt-get install libgirepository1.0-dev libcairo2-dev
