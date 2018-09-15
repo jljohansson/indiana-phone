@@ -4,7 +4,7 @@ Flask-API for ofono
 | Method     | Endpoint                     |
 | ---------- |------------------------------|
 | GET        | /devices                     |
-| POST       | /\<device>/dial/<number>     |
+| POST       | /\<device>/dial/\<number>    |
 | GET        | /\<device>/calls             |
 | POST       | /\<device>/hangup            |
 | POST/GET   | /\<device>/answer            |
