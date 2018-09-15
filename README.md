@@ -1,6 +1,17 @@
 # indiana-phone
 Flask-API for ofono
 
+| Method     | Endpoint                     |
+| ---------- |------------------------------|
+| GET        | /devices                     |
+| POST       | /`<device>`/dial/<number>    |
+| GET        | /`<device>`/calls            |
+| POST       | /`<device>`/hangup           |
+| POST/GET   | /`<device>`/answer           |
+
+
+
+# Installation
 Raspbian reuirements (may be incomplete):
 
 ```bash
