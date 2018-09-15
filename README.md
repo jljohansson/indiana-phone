@@ -20,8 +20,8 @@ $ sudo apt-get install libgirepository1.0-dev libcairo2-dev
 
 Clone the repo:
 ```
-git clone https://github.com/ejojmjn/indiana-phone.git
-cd indiana-phone
+$ git clone https://github.com/ejojmjn/indiana-phone.git
+$ cd indiana-phone
 ```
 
 Create a virtual environment and activate it
