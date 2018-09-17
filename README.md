@@ -1,7 +1,18 @@
 # indiana-phone
 Flask-API for ofono
 
-Raspbian reuirements (may be incomplete):
+| Method     | Endpoint                     |
+| ---------- |------------------------------|
+| GET        | /devices                     |
+| POST       | /\<device>/dial/\<number>    |
+| GET        | /\<device>/calls             |
+| POST       | /\<device>/hangup            |
+| POST/GET   | /\<device>/answer            |
+
+
+
+# Installation
+Raspbian requirements (may be incomplete):
 
 ```bash
 $ sudo apt-get install libgirepository1.0-dev libcairo2-dev
@@ -9,8 +20,8 @@ $ sudo apt-get install libgirepository1.0-dev libcairo2-dev
 
 Clone the repo:
 ```
-git clone https://github.com/ejojmjn/indiana-phone.git
-cd indiana-phone
+$ git clone https://github.com/ejojmjn/indiana-phone.git
+$ cd indiana-phone
 ```
 
 Create a virtual environment and activate it
