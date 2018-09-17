@@ -48,7 +48,7 @@ def cb_server_signal_emission(*args):
 
     elif 'ofono.VoiceCall' in iface:
       if 'PropertyChanged' in args[3]:
-        message = { 'source': 'network', 'event': 'property_change', 'device': makedev(args[1]), 'property': args[4][0], 'property_value': args[4][1] }
+        message = { 'source': 'call', 'event': 'property_change', 'device': makedev(args[1]), 'property': args[4][0], 'property_value': args[4][1] }
       else:
         message = {'unknown_signal': args }
 
