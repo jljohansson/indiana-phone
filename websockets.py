@@ -89,6 +89,8 @@ def index():
 </head>
 <body>
 <textarea id="logbox" width="100" rows="10"></textarea>
+<br>
+<button onclick="document.getElementById('logbox').value='';">Clear</button>
 </body>
 </html>
 ''' 
