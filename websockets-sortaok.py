@@ -32,15 +32,20 @@ class DbusMonitor(Thread):
     event = args[4]
     print(iface)
     makedev = lambda path : path.split('/')[-1]
-    if 'PropertyChanged' in event:
-      message = { 'source': iface, 'event': 'property_change', 'device': makedev(args[2]), 'property': args[5][0], 'property_value': args[5][1] }
+    if 'PropertyChanged' in event and 'Strength' in args[5][0]:
+      socketio.emit('strength', args[5][1])
+    elif 'PropertyChanged' in event and 'Powered' in args[5][0]:
+      socketio.emit('powered', args[5][1])
+    elif 'PropertyChanged' in event and 'Online' in args[5][0]:
+      socketio.emit('online', args[5][1])
+    elif 'PropertyChanged' in event:
+      pass
     elif 'CallAdded' in event:
       message = { 'source': iface, 'event': 'call_added', 'device': makedev(args[2]), 'properties': args[5][1] }
     elif 'CallRemoved' in event:
       message = { 'source': iface, 'event': 'call_removed', 'device': makedev(args[2]) }
     elif 'DisconnectReason' in event:
       message = { 'source': iface, 'event': 'call_disconnect', 'device': makedev(args[2]), 'disconnector': args[5][0] }
-    socketio.emit('message', json.dumps(message))
 
 
 @app.route('/')
@@ -59,9 +64,15 @@ def index():
       var t = document.getElementById("logbox");
       t.value = t.value + 'MESSAGE: ' + message + '\\n';
     });
-    </script>
+    socket.on('strength', function(strength) { document.getElementById("strength").value = strength; });    
+    socket.on('powered', function(powered) { document.getElementById("powered").value = powered; });    
+    socket.on('online', function(online) { document.getElementById("online").value = online; });    
+	</script>
   </head>
   <body>
+    <label for="strength">Strength:</label><input id="strength" type="text" value="N/A"><br>
+    <label for="powered">Powered:</label><input id="powered" type="text" value="N/A"><br>
+    <label for="online">Online:</label><input id="online" type="text" value="N/A"><br>
     <textarea id="logbox" width="100" rows="10"></textarea>
     <br>
     <button onclick="document.getElementById('logbox').value='';">Clear</button>
@@ -76,5 +87,6 @@ def test_connect():
 
 if __name__ == '__main__':
   thread = DbusMonitor()
+  thread.daemon = True
   thread.start()
   socketio.run(app, host='0.0.0.0', port=5001)
