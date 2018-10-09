@@ -1,0 +1,80 @@
+{
+  "device": "default",
+  "commands": [
+    { 
+      "id": 1,
+      "command": "am force-stop com.samsung.advp.imssettings",
+      "memo": "Stop the app so we can start clean"
+    },
+    { 
+      "id": 2,
+      "command": "am start -n com.samsung.advp.imssettings/com.samsung.advp.imssettings.MainActivity",
+      "memo": "Start the IMS test app"
+    },
+    {
+      "id": 3,
+      "command": "input tap 1165 1480",
+      "memo": "Close buggy popup on this device"
+    },
+    {
+      "id": 4,
+      "command": "input tap 765 920",
+      "memo": "Open IMS Profile submenu"
+    },
+    {
+      "id": 5,
+      "command": "input tap 765 400",
+      "memo": "Select TEL VOLTE profile"
+    },
+    {
+      "id": 6,
+      "command": "input swipe 770 2500 770 1350 2000",
+      "memo": "Scroll down"
+    },
+    {
+      "id": 7,
+      "command": "input tap 765 2160",
+      "memo": "Open P-CSCF settings"
+    },
+    {
+      "id": 8,
+      "command": "input tap 180 725",
+      "memo": "Select All 1"
+    },
+    {
+      "id": 9,
+      "command": "input tap 180 800",
+      "memo": "Select All 2"
+    },
+    {
+      "id": 10,
+      "command": "input tap 193 600",
+      "memo": "Select All 3"
+    },
+    {
+      "id": 11,
+      "command": "input text faab:beef:cab::a",
+      "memo": "Type new IP"
+    },
+    {
+      "id": 12,
+      "command": "input tap 1200 955",
+      "memo": "Select OK"
+    },
+    {
+      "id": 13,
+      "command": "input tap 765 2410",
+      "memo": "Open P-CSCF Preference"
+    },
+    {
+      "id": 14,
+      "command": "input tap 1200 1265",
+      "memo": "Select Manaual"
+    },
+    {
+      "id": 15,
+      "command": "input tap 1160 210",
+      "memo": "Save and activate profile"
+    }
+  ]
+} 
