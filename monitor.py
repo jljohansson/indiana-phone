@@ -1,46 +1,42 @@
 from pydbus import SystemBus
 from gi.repository import GLib
+import paho.mqtt.publish as publish
 import json
 
-import paho.mqtt.publish as publish
+def mqtt(topic, payload, hostname="127.0.0.1", retain=False):
+   publish.single(topic, payload, hostname=hostname)
 
-#Message:  (':1.654', '/hfp/org/bluez/hci0/dev_94_65_2D_84_61_99', 'org.ofono.Modem', 'PropertyChanged', ('Powered', False))
-#Data:  Powered
+def prop(signal, params):
+  return json.dumps({signal: {params[0]: params[1]}})
 
-def cb_PropertyChanged(*args):
-   print("Message: ", args)
-   #Message:  (':1.2', '/hfp/org/bluez/hci0/dev_94_65_2D_84_61_99', 'org.ofono.Modem', 'PropertyChanged', ('Powered', True))
-   #Message:  (':1.2', '/hfp/org/bluez/hci0/dev_94_65_2D_84_61_99', 'org.ofono.NetworkRegistration', 'PropertyChanged', ('Status', 'registered'))
-   dev   = args[1].split('/')[-1]
-   iface = args[2].split('.')[-1]
-   payload = json.dumps({'PropertyChanged': {args[4][0]: args[4][1]}})
-   publish.single(dev, payload, hostname="127.0.0.1")
+def cadd(signal, params):
+  return json.dumps({signal: {"path": params[0], "props": params[1]}})
 
-def cb_VoiceCallManager(*args):
-   print("Message: ", args)
-   dev   = args[1].split('/')[-1]
-   signal = args[3]
-   payload = json.dumps({signal: {args[4][0]: args[4][1]}})
-   publish.single(dev, payload, hostname="127.0.0.1")
+def crem(signal, params):
+  return json.dumps({signal: {"path": params[0]}})
 
-# Interfaces:
-#  'org.ofono.Modem'
-#  'org.ofono.NetworkRegistration'
-#  'org.ofono.VoiceCallManager'
-#  'org.ofono.VoiceCallManager'
+def dev(obj, iface):
+  return obj.split('/')[-1] + '/' + iface.split('.')[-1]
+
+def vcdev(obj, iface):
+  return obj.split('/')[-2] + '/' + iface.split('.')[-1]
+
 
 if __name__ == '__main__':
+
   bus = SystemBus()
-  bus.subscribe(iface = 'org.ofono.Modem',               signal='PropertyChanged', signal_fired = cb_PropertyChanged)
-  bus.subscribe(iface = 'org.ofono.NetworkRegistration', signal='PropertyChanged', signal_fired = cb_PropertyChanged)
-  bus.subscribe(iface = 'org.ofono.CallVolume',          signal='PropertyChanged', signal_fired = cb_PropertyChanged)
-  bus.subscribe(iface = 'org.ofono.NetworkRegistration', signal='PropertyChanged', signal_fired = cb_PropertyChanged)
-  
-  bus.subscribe(iface = 'org.ofono.VoiceCallManager',   signal=None,  signal_fired = cb_VoiceCallManager)
-#  bus.subscribe(iface = 'org.ofono.VoiceCall',          signal=None,  signal_fired = cb_VoiceCall)
-  
+  if_list = [
+             ('org.ofono.Modem',               'PropertyChanged', lambda _a, obj, iface, signal, params: mqtt(dev(obj, iface), prop(signal, params))),
+             ('org.ofono.VoiceCall',           'PropertyChanged', lambda _a, obj, iface, signal, params: mqtt(vcdev(obj, iface), prop(signal, params))),
+             ('org.ofono.CallVolume',          'PropertyChanged', lambda _a, obj, iface, signal, params: mqtt(dev(obj, iface), prop(signal, params))),
+             ('org.ofono.VoiceCallManager',    'PropertyChanged', lambda _a, obj, iface, signal, params: mqtt(dev(obj, iface), prop(signal, params))),
+             ('org.ofono.VoiceCallManager',    'CallAdded',       lambda _a, obj, iface, signal, params: mqtt(dev(obj, iface), cadd(signal, params))),
+             ('org.ofono.VoiceCallManager',    'CallRemoved',     lambda _a, obj, iface, signal, params: mqtt(dev(obj, iface), crem(signal, params))),
+             ('org.ofono.NetworkRegistration', 'PropertyChanged', lambda _a, obj, iface, signal, params: mqtt(dev(obj, iface), prop(signal, params))),
+            ]
+  [bus.subscribe(iface=iface, signal=signal, signal_fired=cb) for iface, signal, cb in if_list]
+
+  mqtt("monitor", payload="started", retain=True)
+
   loop = GLib.MainLoop()
-  publish.single("ofono", payload="running", hostname="127.0.0.1", retain=True)
-  publish.single("ofono/2", payload="running2", hostname="127.0.0.1", retain=True)
-  publish.single("ofono/3", payload="running3", hostname="127.0.0.1", retain=True)
   loop.run()
