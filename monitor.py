@@ -3,7 +3,11 @@ from gi.repository import GLib
 import paho.mqtt.publish as publish
 import json
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 def mqtt(topic, payload, hostname="127.0.0.1", retain=False):
+   logging.debug('sending to mqtt: topic=%s payload=%s' % (topic, payload))
    publish.single(topic, payload, hostname=hostname)
 
 def prop(signal, params):
@@ -23,6 +27,8 @@ def vcdev(obj, iface):
 
 
 if __name__ == '__main__':
+
+  logging.debug('starting')
 
   bus = SystemBus()
   if_list = [
