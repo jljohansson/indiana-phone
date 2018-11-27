@@ -58,8 +58,9 @@ def hangup_call(device):
 def answer_call(device):
   try:
     vcm = bus.get('org.ofono', '/hfp/org/bluez/hci0/' + device)
-    vcm.ReleaseAndSwap()
     calls = vcm.GetCalls()
+    vc = bus.get('org.ofono',calls[0][0])
+    vc.Answer()
   except Exception as ex:
     print(ex)
     abort(500)
