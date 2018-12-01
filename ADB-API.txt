@@ -1,0 +1,21 @@
+{
+"operation": "set_pcscf",
+"parameters": ["2001:cab:def:bad::4"],
+"sequence": [
+ {"shell": "am force-stop com.samsung.advp.imssettings", "description": "clean start"},
+ {"shell": "am start -n com.samsung.advp.imssettings/com.samsung.advp.imssettings.MainActivity", "description": "start IMS app"},
+ {"shell": "input tap 1165 1480", "description": "close buggy popup"},
+ {"shell": "input tap 765 920", "description": "open IMS Profile menu"},
+ {"shell": "input tap 765 400", "description": "select TEL VOLTE profile"},
+ {"shell": "input swipe 770 2500 770 1350 2000", "description": "scroll to P-CSCF settings"},
+ {"shell": "input tap 765 2160", "description": "open P-CSCF settings"},
+ {"shell": "input tap 180 725", "description": "select all #1"},
+ {"shell": "input tap 180 800", "description": "select all #2"},
+ {"shell": "input tap 193 600", "description": "select all #3"},
+ {"shell": "input text 2001:8006:3521:400c:7:e1c0::e", "description": "type in the P-CSCF address"},
+ {"shell": "input tap 1200 955", "description": "select OK"},
+ {"shell": "input tap 765 2410", "description": "open P-CSCF preference"},
+ {"shell": "input tap 1200 1265", "description": "select manual"},
+ {"shell": "input tap 1160 210", "description": "save button"}
+]
+}
