@@ -3,6 +3,7 @@
 #
 from flask import Blueprint, abort, request, json
 import os
+import yaml
 from adb import adb_commands
 from adb import sign_m2crypto
 from adb import usb_exceptions
@@ -23,6 +24,29 @@ def run_shell_commands(shell_commands):
       device.Shell(command['shell'])
   except Exception as ex:
     abort(500, str(ex))
+
+
+@adb_api.route('/api', methods = ['GET'])
+def api():
+   return '''
+GET /adb/api
+POST /adb/shell
+POST /adb/action/set-pcscf/profile
+   '''
+
+@adb_api.route('/action/<string:action>/<string:profile>', methods = ['POST'])
+def action(action, profile):
+  logging.info('action=%s profile=%s' % (action, profile))
+  with open(profile + ".yaml", "r") as stream:
+    try:
+      data = yaml.load(stream)
+      logging.info('loaded profile from %s' % (stream.name))
+      action = data[action]
+      sequence = action['sequence']
+      data['sequence'] = run_shell_commands(sequence)
+      return json.dumps(data)
+    except Exception as ex:
+      abort(500, str(ex))
 
 @adb_api.route('/shell', methods = ['POST'])
 def shell():
